@@ -17,9 +17,11 @@ public class Main {
 	/* Eclipse */public static String path = "./res/";
 
 	public static void main(String[] args) {
-		BusStop[] stops = readInStopData();
-		
-		//CSVLoader c = new CSVLoader(path + "stop_times.txt");
+		// BusStop[] stops = readInStopData();
+		// long time = System.nanoTime();
+		// CSVLoader c = new CSVLoader(path + "stop_times.txt");
+		// time = System.nanoTime() - time;
+		// System.out.println(time);
 		// ArrayList<String> list = c.readFile();
 		// for (String s : list) {
 		// 	String[] arr = s.split(",");
@@ -27,10 +29,10 @@ public class Main {
 		// 		System.out.println(s);
 		// 	}
 		// }
-		System.out.println(stops.length);
-		for (int i = 0; i < stops.length; i++) {
-			System.out.println(stops[i]);
-		}
+		// System.out.println(stops.length);
+		// for (int i = 0; i < stops.length; i++) {
+		// 	System.out.println(stops[i]);
+		// }
 	}
 
 	public static BusStop[] readInStopData() {

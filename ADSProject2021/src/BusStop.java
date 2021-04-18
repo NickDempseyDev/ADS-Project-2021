@@ -1,4 +1,4 @@
-public class BusStop {
+public class BusStop implements Comparable <BusStop>{
     int ID;
     int code;
     String name;
@@ -26,6 +26,17 @@ public class BusStop {
     public String toString() {
         return ID + "," + code + "," + name + "," + desc + "," + lat + "," + lon + "," + zoneID + "," + locType + ","
                 + parent;
+    }
+
+    @Override
+    public int compareTo(BusStop stop) {
+        if (this.ID == ((BusStop) stop).ID) {
+            return 0;
+        }
+        else if (this.ID < ((BusStop) stop).ID) {
+            return -1;
+        }
+        return 1;
     }
 
 }
