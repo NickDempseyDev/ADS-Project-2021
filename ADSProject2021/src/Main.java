@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Main {
 	// Paths for VSCode only
-	/// *Dominik*/public static String path = "D:\\Dominik\\Documents\\College
+	// / *Dominik*/public static String path = "D:\\Dominik\\Documents\\College
 	// Material\\Year 2\\Year 2 - Algorithms and Data Structures (CSU22011 &
 	// CSU22012)\\ADS Project\\ADS-Project-2021\\ADSProject2021\\res\\";
 	/// *Daithi*/ public static String path =
@@ -10,27 +10,33 @@ public class Main {
 	// project\\ADS-Project-2021\\ADSProject2021\\res\\";
 	/// *Adri*/ public static String path =
 	// "/Users/adriana/Desktop/ADS/ADS-Project-2021/ADSProject2021/res/";
+	// *Nick* 
+	// public static String path = "D:\\dev\\College\\AlgosProj\\ADSProject2021\\res\\";
 
 	// Relative path for Eclipse
 	/* Eclipse */public static String path = "./res/";
 
 	public static void main(String[] args) {
-		// BusStop[] stops = null;
-		// readInStopData(stops);
-		CSVLoader c = new CSVLoader(path + "stop_times.txt");
-		ArrayList<String> list = c.readFile();
-		for (String s : list) {
-			String[] arr = s.split(",");
-			if (!arr[1].equals(arr[2])) {
-				System.out.println(s);
-			}
+		BusStop[] stops = readInStopData();
+		
+		//CSVLoader c = new CSVLoader(path + "stop_times.txt");
+		// ArrayList<String> list = c.readFile();
+		// for (String s : list) {
+		// 	String[] arr = s.split(",");
+		// 	if (!arr[1].equals(arr[2])) {
+		// 		System.out.println(s);
+		// 	}
+		// }
+		System.out.println(stops.length);
+		for (int i = 0; i < stops.length; i++) {
+			System.out.println(stops[i]);
 		}
 	}
 
-	public static void readInStopData(BusStop[] stops) {
-		CSVLoader c = new CSVLoader(path + "res\\stops.txt");
+	public static BusStop[] readInStopData() {
+		CSVLoader c = new CSVLoader(path + "stops.txt");
 		ArrayList<String> list = c.readFile();
-		stops = new BusStop[list.size() - 1];
+		BusStop[] stops = new BusStop[list.size() - 1];
 
 		for (int i = 0; i < stops.length; i++) {
 			String[] data = list.get(i + 1).split(",");
@@ -42,9 +48,16 @@ public class Main {
 			if (!data[1].equals(" ")) {
 				code = Integer.parseInt(data[1]);
 			}
-			stops[i] = new BusStop(Integer.parseInt(data[0]), code, data[2], data[3], Double.parseDouble(data[4]),
+			String token = data[2].split(" ")[0];
+			String busStopName = data[2];
+			if(token.length() == 2 && token.charAt(1) == 'B') {
+				busStopName = data[2].substring(3) + " " + token;
+			}
+
+			stops[i] = new BusStop(Integer.parseInt(data[0]), code, busStopName, data[3], Double.parseDouble(data[4]),
 					Double.parseDouble(data[5]), data[6], Integer.parseInt(data[8]), parent);
 		}
+		return stops;
 	}
 
 }
