@@ -30,6 +30,7 @@ public class CSVLoader {
 		}
 		return list;
 	}
+
 	public ArrayList<String> readFile() {
 		ArrayList<String> list = new ArrayList<String>();
 		try {
