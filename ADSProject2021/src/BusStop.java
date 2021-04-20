@@ -13,6 +13,7 @@ public class BusStop implements Comparable<BusStop> {
     private int parent;
 
     private ArrayList<BusEdge> edges;
+    private int index;
 
     public BusStop(int ID, int code, String name, String desc, double lat, double lon, String zoneID, int locType,
             int parent) {
@@ -27,6 +28,7 @@ public class BusStop implements Comparable<BusStop> {
         this.parent = parent;
 
         edges = new ArrayList<BusEdge>();
+        index = -1;
     }
 
     /**
@@ -141,5 +143,22 @@ public class BusStop implements Comparable<BusStop> {
      */
     public void sortEdges() {
         Collections.sort(edges);
+    }
+
+    
+    /**
+     * @return bus stop index in bus stop array
+     */
+    public int getIndex()
+    {
+        return index;
+    }
+
+     /**
+     * @param index: new bus stop index
+     */
+    public void setIndex(int index)
+    {
+        this.index = index;
     }
 }
