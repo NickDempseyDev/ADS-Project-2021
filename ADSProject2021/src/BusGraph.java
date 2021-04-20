@@ -2,157 +2,120 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
 
-public class BusGraph
-{
-    BusStop[] stops;
-    TST<BusStop> tst;
+public class BusGraph {
+	BusStop[] stops;
+	TST<BusStop> tst;
 
-    public BusGraph(String stopsFile, String tripsFile, String transferFile)
-    {
-        stops = readInStopData(stopsFile);
-        readInTrips(stops, tripsFile);
-        readInTransfers(stops, transferFile);
-        tst = new TST<BusStop>();
-        for(int i = 0; i < stops.length; i++)
-        {
-            tst.put(stops[i].getName(), stops[i]);
-        }
-    }
-    
-    // public DijkstraSP(EdgeWeightedDigraph G, int s) {
-    //     for (DirectedEdge e : G.edges()) {
-    //         if (e.weight() < 0)
-    //             throw new IllegalArgumentException("edge " + e + " has negative weight");
-    //     }
+	public BusGraph(String stopsFile, String tripsFile, String transferFile) {
+		stops = readInStopData(stopsFile);
+		readInTrips(stops, tripsFile);
+		readInTransfers(stops, transferFile);
+		tst = new TST<BusStop>();
+		for (int i = 0; i < stops.length; i++) {
+			tst.put(stops[i].getName(), stops[i]);
+		}
+	}
 
-    //     distTo = new double[G.V()];
-    //     edgeTo = new DirectedEdge[G.V()];
-
-    //     validateVertex(s);
-
-    //     for (int v = 0; v < G.V(); v++)
-    //         distTo[v] = Double.POSITIVE_INFINITY;
-    //     distTo[s] = 0.0;
-
-    //     // relax vertices in order of distance from s
-    //     pq = new IndexMinPQ<Double>(G.V());
-    //     pq.insert(s, distTo[s]);
-    //     while (!pq.isEmpty()) {
-    //         int v = pq.delMin();
-    //         for (DirectedEdge e : G.adj(v))
-    //             relax(e);
-    //     }
-
-    //     // check optimality conditions
-    //     assert check(G, s);
-    // }
-
-    // private void relax(DirectedEdge e) {
-    //     int v = e.from(), w = e.to();
-    //     if (distTo[w] > distTo[v] + e.weight()) {
-    //         distTo[w] = distTo[v] + e.weight();
-    //         edgeTo[w] = e;
-    //         if (pq.contains(w)) pq.decreaseKey(w, distTo[w]);
-    //         else                pq.insert(w, distTo[w]);
-    //     }
-    // }
-
-    /**
-     * Takes in 2 bus Stops and finds the shortest path between them returns the 'cost' of the trip
-     * @param start: bus stop we begin from
-     * @param destination: bus stop we want to end at
-     * @return the cost of the shortest trip
-     */
-    public double dijkstra(BusStop start, BusStop destination)
-    {
-        int startPos = findBusStop(start.getID());
-        //initialize distto array, everything but the start intersection should be infinity
+	/**
+	 * Takes in 2 bus Stops and finds the shortest path between them returns the
+	 * 'cost' of the trip
+	 * 
+	 * @param start:       bus stop we begin from
+	 * @param destination: bus stop we want to end at
+	 * @return the cost of the shortest trip
+	 */
+	public double dijkstra(BusStop start, BusStop destination) {
+		int startPos = findBusStop(start.getID());
+		// initialize distto array, everything but the start intersection should be
+		// infinity
 		double[] distTo = new double[stops.length];
 		Arrays.fill(distTo, Double.POSITIVE_INFINITY);
 		distTo[startPos] = 0;
 
-		//initialize visitied array, everything but startinersection should be false
+		// initialize visitied array, everything but startinersection should be false
 		boolean[] visit = new boolean[stops.length];
 		Arrays.fill(visit, false);
 		visit[startPos] = true;
 
-        //initialize edgeTo array
-        BusEdge[] edgeTo = new BusEdge[stops.length];
+		// initialize edgeTo array
+		BusEdge[] edgeTo = new BusEdge[stops.length];
+		BusEdge temp = new BusEdge(start, start, 0);
+		edgeTo[start.getIndex()] = temp;
 
-        //initialize queue for visiting
+		// initialize queue for visiting
 		ArrayList<BusEdge> toVisit = new ArrayList<BusEdge>();
-        
-		do
-		{
-			//returns index of intersection in toVisit with least distance from start
-            BusStop currentStop = start;
-            int toGet = -1;
 
-            if(toVisit.size() > 0)
-            {
-                toGet = findMinPriority(toVisit, distTo);
-                currentStop = toVisit.remove(toGet).getTo();//toVisit.get(toGet).getTo();
-            }
-			
-			for(int i = 0; i < currentStop.getEdges().size(); i++)
-			{
-                BusEdge currentEdge = currentStop.getEdges().get(i);
-				//if node has not been visited or isnt on the list already, add it to the queue
-				if(visit[currentEdge.getTo().getIndex()] != true)
-				{
+		do {
+			// returns index of intersection in toVisit with least distance from start
+			BusStop currentStop = start;
+			int toGet = -1;
+
+			if (toVisit.size() > 0) {
+				toGet = findMinPriority(toVisit, distTo);
+				currentStop = toVisit.remove(toGet).getTo();// toVisit.get(toGet).getTo();
+			}
+
+			for (int i = 0; i < currentStop.getEdges().size(); i++) {
+				BusEdge currentEdge = currentStop.getEdges().get(i);
+				// if node has not been visited or isnt on the list already, add it to the queue
+				if (visit[currentEdge.getTo().getIndex()] != true) {
 					toVisit.add(currentEdge);
 					visit[currentEdge.getTo().getIndex()] = true;
 				}
 
-				//relax - if the new proposed distance is less than whats in the distTo array, replace it
-				if(distTo[currentEdge.getTo().getIndex()] > distTo[currentEdge.getFrom().getIndex()] + currentEdge.getCost())
-				{
-					distTo[currentEdge.getTo().getIndex()] = distTo[currentEdge.getFrom().getIndex()] + currentEdge.getCost();
-                    edgeTo[currentEdge.getTo().getIndex()] = currentEdge;
-                }
+				// relax - if the new proposed distance is less than whats in the distTo array,
+				// replace it
+				if (distTo[currentEdge.getTo().getIndex()] > distTo[currentEdge.getFrom().getIndex()]
+						+ currentEdge.getCost()) {
+					distTo[currentEdge.getTo().getIndex()] = distTo[currentEdge.getFrom().getIndex()]
+							+ currentEdge.getCost();
+					edgeTo[currentEdge.getTo().getIndex()] = currentEdge;
+				}
 			}
 
-			//remove current intersection
-			//toVisit.remove(toGet);
-		}while(toVisit.size() > 0);
+			// remove current intersection
+			// toVisit.remove(toGet);
+		} while (toVisit.size() > 0);
 
-        //PRINT OUT BULLSHIT HERE!!!! THE PATH ASSHOLE THE PATH
-        printPath(edgeTo, destination, start, distTo[destination.getIndex()]);
+		printPath(edgeTo, destination, start, distTo[destination.getIndex()]);
 
-        return distTo[destination.getIndex()];
-    }
+		return distTo[destination.getIndex()];
+	}
 
+	private void printPath(BusEdge[] edges, BusStop destination, BusStop start, double totalCost) {
+		Stack<BusStop> busStops = new Stack<BusStop>();
+		Stack<BusEdge> path = new Stack<BusEdge>();
+		busStops.push(destination);
 
-    private void printPath(BusEdge[] edges, BusStop destination, BusStop start, double totalCost)
-    {
-        Stack<BusStop> path = new Stack<BusStop>();
-        path.push(destination);
+		BusEdge current = edges[destination.getIndex()];
+		while (current.getTo() != start) {
+			busStops.push(current.getFrom());
+			path.push(current);
+			current = edges[current.getFrom().getIndex()];
+			// System.out.println(current);
+		}
 
-        BusEdge current = edges[destination.getIndex()];
-        while(current.getTo() != start)
-        {
-            path.push(current.getFrom());
-            current = edges[current.getFrom().getIndex()];
-        }
+		System.out.println("\nBus Stops\n");
+		while (!busStops.empty()) {
+			System.out.println(busStops.pop());
+		}
+		System.out.println("\nTrip\n");
 
-        while(!path.empty())
-        {
-            System.out.println(path.pop());
-        }
-        
+		while (!path.empty()) {
+			System.out.println(path.pop());
+		}
+		System.out.println("\nTotal Cost of Trip: " + totalCost + "\n");
 
-    }
+	}
 
-    private int findMinPriority(ArrayList<BusEdge> intersections, double[] costs)
-	{
-		//instantiate mindistance and mindid as intersection at position 0 in intersections
+	private int findMinPriority(ArrayList<BusEdge> intersections, double[] costs) {
+		// instantiate mindistance and mindid as intersection at position 0 in
+		// intersections
 		double minCost = costs[intersections.get(0).getTo().getIndex()];
 		int minID = 0;
 
-		for(int i = 1; i < intersections.size(); i++)
-		{
-			if(costs[intersections.get(i).getTo().getIndex()] < minCost)
-			{
+		for (int i = 1; i < intersections.size(); i++) {
+			if (costs[intersections.get(i).getTo().getIndex()] < minCost) {
 				minCost = costs[intersections.get(i).getTo().getIndex()];
 				minID = i;
 			}
@@ -160,10 +123,12 @@ public class BusGraph
 
 		return minID;
 	}
-    /**
+
+	/**
 	 * Reads in stop_times file and creates edges from data, adding them to the
 	 * approppriate bus stop
-	 * @param file: name of file that contains trip information
+	 * 
+	 * @param file:  name of file that contains trip information
 	 * @param stops: Array of all bus stops
 	 **/
 	private void readInTrips(BusStop[] stops, String file) {
@@ -190,20 +155,19 @@ public class BusGraph
 		}
 	}
 
-    public void searchBusStop(String busStopName)
-    {   
-        String[] matches = tst.keysWithPrefix(busStopName);
-        // remove later and return string array
-        for(int i = 0; i < matches.length; i++)
-        {
-            System.out.println((i+1)+". "+ matches[i]);
-        }
-    }
+	public void searchBusStop(String busStopName) {
+		String[] matches = tst.keysWithPrefix(busStopName);
+		// remove later and return string array
+		for (int i = 0; i < matches.length; i++) {
+			System.out.println((i + 1) + ". " + matches[i]);
+		}
+	}
 
 	/**
 	 * Reads in transfers file and creates edges from data and adds it to
 	 * appropriate bus stop
-	 * @param file: name of file that contains transfers
+	 * 
+	 * @param file:  name of file that contains transfers
 	 * @param stops: array of all bus stops
 	 */
 	private void readInTransfers(BusStop[] stops, String file) {
@@ -230,7 +194,7 @@ public class BusGraph
 	 * @param stops: array of all bus stops
 	 * @return index of bus stop with the given array
 	 **/
-	private int findBusStop(int id) {
+	public int findBusStop(int id) {
 		int low = 0;
 		int high = stops.length - 1;
 
@@ -250,6 +214,7 @@ public class BusGraph
 
 	/**
 	 * Reads in stops file and creates an array of bus stop classes from the data
+	 * 
 	 * @param fileName: name of file that contains the stops
 	 * @return array of all bus stops
 	 */
@@ -278,10 +243,9 @@ public class BusGraph
 					Double.parseDouble(data[5]), data[6], Integer.parseInt(data[8]), parent);
 		}
 		Arrays.sort(stops);
-        for(int i = 0; i < stops.length; i++)
-        {
-            stops[i].setIndex(i);
-        }
+		for (int i = 0; i < stops.length; i++) {
+			stops[i].setIndex(i);
+		}
 		return stops;
 	}
 

@@ -1,6 +1,6 @@
 public class BusEdge implements Comparable<BusEdge> {
     private boolean isTransfer;
-    private int cost;
+    private double cost;
     private int tripID;
     private BusStop from;
     private BusStop to;
@@ -14,7 +14,7 @@ public class BusEdge implements Comparable<BusEdge> {
         isTransfer = true;
         this.from = from;
         this.to = to;
-        this.cost = cost / 100;
+        this.cost = cost / 100.0;
 
         tripID = -1;
         departureTime = "";
@@ -45,11 +45,11 @@ public class BusEdge implements Comparable<BusEdge> {
     @Override
     public String toString() {
         if (isTransfer) {
-            String s = "TRANSFER From: " + from + ", To: " + to + ", COST: " + cost;
+            String s = "TRANSFER From: " + from.getName() + ", To: " + to.getName() + ", COST: " + cost;
             return s;
         } else {
-            String s = "TripID: " + tripID + ", From: " + from.getName() + ", To: " + to.getName() + ", Departue Time: "
-                    + departureTime + ", Arrival Time: " + arrivalTime + ", Seq. No: " + stopSequence + ", Distance: "
+            String s = "TripID: " + tripID + ", From: " + from.getName() + ", To: " + to.getName() + ", Departue Time:"
+                    + departureTime + ", Arrival Time:" + arrivalTime + ", Seq. No: " + stopSequence + ", Distance: "
                     + distance + ", COST: " + cost;
             return s;
         }
@@ -80,7 +80,7 @@ public class BusEdge implements Comparable<BusEdge> {
     /**
      * @return edge cost
      */
-    public int getCost() {
+    public double getCost() {
         return cost;
     }
 
