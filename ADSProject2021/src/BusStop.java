@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Arrays;
 
 public class BusStop implements Comparable<BusStop> {
     private int ID;
@@ -57,6 +58,24 @@ public class BusStop implements Comparable<BusStop> {
         }
         return 1;
     }
+
+    public BusEdge findBusEdge(int id) {
+		int low = 0;
+		int high = edges.size() - 1;
+
+		while (low <= high) {
+			int middle = low + ((high - low) / 2);
+			int midID = edges.get(middle).getTripID();
+
+			if (midID == id)
+				return edges.get(middle);
+			else if (midID > id)
+				high = middle - 1;
+			else
+				low = middle + 1;
+		}
+		return null;
+	}
 
     /**
      * @return bus stop id
@@ -161,4 +180,5 @@ public class BusStop implements Comparable<BusStop> {
     {
         this.index = index;
     }
+ 
 }

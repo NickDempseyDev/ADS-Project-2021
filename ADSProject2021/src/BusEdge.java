@@ -9,6 +9,8 @@ public class BusEdge implements Comparable<BusEdge> {
     private int stopSequence;
     private double distance;
 
+    private int timeInt;
+
     // Constructor for transfer type edges
     public BusEdge(BusStop from, BusStop to, int cost) {
         isTransfer = true;
@@ -21,6 +23,8 @@ public class BusEdge implements Comparable<BusEdge> {
         arrivalTime = "";
         stopSequence = -1;
         distance = -1;
+
+        timeInt = -1;
     }
 
     // Constructor for stop times edges
@@ -35,8 +39,27 @@ public class BusEdge implements Comparable<BusEdge> {
         this.arrivalTime = arrivalTime;
         this.stopSequence = stopSequence;
         this.distance = distance;
+
+        timeInt = timeToInt(arrivalTime);
     }
 
+    /**
+     * takes in string form of time, h:m:s and return int number of seconds
+     * @param time: string time to be converted
+     * @return : num of seconds
+     */
+    private int timeToInt(String time)
+    {
+        time = time.replaceAll(" ", "");
+        String[] times = time.split(":");
+        int hours = Integer.parseInt(times[0]);
+        int minutes = Integer.parseInt(times[1]);
+        int seconds = Integer.parseInt(times[2]);
+        
+        int secondTime = (hours * 60 * 60) + (minutes * 60) + seconds;
+
+        return secondTime;
+    }
     /**
      * Returns data of edge as a string
      * 
@@ -48,7 +71,7 @@ public class BusEdge implements Comparable<BusEdge> {
             String s = "TRANSFER From: " + from.getName() + ", To: " + to.getName() + ", COST: " + cost;
             return s;
         } else {
-            String s = "TripID: " + tripID + ", From: " + from.getName() + ", To: " + to.getName() + ", Departue Time:"
+            String s = "TripID: " + tripID + ", From: " + from.getName() + ", To: " + to.getName() + ", Departure Time:"
                     + departureTime + ", Arrival Time:" + arrivalTime + ", Seq. No: " + stopSequence + ", Distance: "
                     + distance + ", COST: " + cost;
             return s;
@@ -57,7 +80,6 @@ public class BusEdge implements Comparable<BusEdge> {
 
     /**
      * Compares edge to input edge based on tripid
-     * 
      * @param edge: edge to be compared to
      * @return 1 if >, -1 if <, 0 if equal
      */
@@ -122,7 +144,7 @@ public class BusEdge implements Comparable<BusEdge> {
     /**
      * @return edge seq number
      */
-    public double getSequenceNumber() {
+    public int getSequenceNumber() {
         return stopSequence;
     }
 
@@ -131,5 +153,12 @@ public class BusEdge implements Comparable<BusEdge> {
      */
     public boolean getIsTransfer() {
         return isTransfer;
+    }
+
+    /**
+     * @return the time in seconds
+     */
+    public int getArrivalTimeAsSeconds() {
+        return timeInt;
     }
 }

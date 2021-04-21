@@ -1,12 +1,16 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
+import java.util.HashMap;
+import java.util.Collections;
 
 public class BusGraph {
 	BusStop[] stops;
 	TST<BusStop> tst;
+	HashMap<Integer, Integer> tripIDs;
 
 	public BusGraph(String stopsFile, String tripsFile, String transferFile) {
+		tripIDs = new HashMap<Integer, Integer>();
 		stops = readInStopData(stopsFile);
 		readInTrips(stops, tripsFile);
 		readInTransfers(stops, transferFile);
@@ -14,8 +18,44 @@ public class BusGraph {
 		for (int i = 0; i < stops.length; i++) {
 			tst.put(stops[i].getName(), stops[i]);
 		}
+		sortEdges();
 	}
 
+	/**
+	 * Finds all trips with arrival time = input time
+	 * @param time: time we want to find
+	 */
+	public void findTripByTime(int time)
+	{
+		ArrayList<Integer> matchingTrips = new ArrayList<Integer>();
+		for(int i = 0; i < stops.length; i++)
+		{
+			ArrayList<BusEdge> edges = stops[i].getEdges();
+			for(int j = 0; j < edges.size(); j++)
+			{
+				BusEdge currentEdge = edges.get(j);
+				if(currentEdge.getArrivalTimeAsSeconds() == time)
+				{
+					matchingTrips.add(currentEdge.getTripID());
+				}
+			}
+		}
+		Collections.sort(matchingTrips);
+		for(int i = 0; i < matchingTrips.size(); i++)
+		{
+			System.out.println("Details for trip: " + matchingTrips.get(i));
+
+			BusEdge currentEdge = stops[tripIDs.get(matchingTrips.get(i))].findBusEdge(matchingTrips.get(i));
+
+			while(currentEdge != null && currentEdge.getArrivalTimeAsSeconds() <= time)
+			{
+				System.out.println(currentEdge);
+				currentEdge = currentEdge.getTo().findBusEdge(matchingTrips.get(i));
+			}
+			System.out.println("\n");
+		}
+
+	}
 	/**
 	 * Takes in 2 bus Stops and finds the shortest path between them returns the
 	 * 'cost' of the trip
@@ -151,12 +191,15 @@ public class BusGraph {
 				}
 				stops[fromIndex].addEdge(new BusEdge(tripID, stops[fromIndex], stops[toIndex], departureTime,
 						arrivalTime, seq, toDist - fromDist));
+
+				if(!tripIDs.containsKey(tripID))
+					tripIDs.put(tripID, fromIndex);
 			}
 		}
 	}
 
 	public void searchBusStop(String busStopName) {
-		String[] matches = tst.keysWithPrefix(busStopName);
+		String[] matches = tst.keysWithPrefix(busStopName.toUpperCase());
 		// remove later and return string array
 		for (int i = 0; i < matches.length; i++) {
 			System.out.println((i + 1) + ". " + matches[i]);
@@ -247,6 +290,14 @@ public class BusGraph {
 			stops[i].setIndex(i);
 		}
 		return stops;
+	}
+
+	private void sortEdges()
+	{
+		for(BusStop stop : stops)
+		{
+			stop.sortEdges();
+		}
 	}
 
 }
