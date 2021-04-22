@@ -39,8 +39,19 @@ public class BusStop implements Comparable<BusStop> {
      */
     @Override
     public String toString() {
-        return ID + "," + code + "," + name + "," + desc + "," + lat + "," + lon + "," + zoneID + "," + locType + ","
-                + parent;
+        return "[" + index + "] " + ID + ", " + code + ", " + name + ", "
+                + desc/*
+                       * + "," + lat + "," + lon + "," + zoneID + "," + locType + "," + parent
+                       */;
+    }
+
+    public boolean existsTransfer(BusStop dest) {
+        for (BusEdge edge : edges) {
+            if (edge.getTo() == dest && edge.getIsTransfer()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -60,22 +71,22 @@ public class BusStop implements Comparable<BusStop> {
     }
 
     public BusEdge findBusEdge(int id) {
-		int low = 0;
-		int high = edges.size() - 1;
+        int low = 0;
+        int high = edges.size() - 1;
 
-		while (low <= high) {
-			int middle = low + ((high - low) / 2);
-			int midID = edges.get(middle).getTripID();
+        while (low <= high) {
+            int middle = low + ((high - low) / 2);
+            int midID = edges.get(middle).getTripID();
 
-			if (midID == id)
-				return edges.get(middle);
-			else if (midID > id)
-				high = middle - 1;
-			else
-				low = middle + 1;
-		}
-		return null;
-	}
+            if (midID == id)
+                return edges.get(middle);
+            else if (midID > id)
+                high = middle - 1;
+            else
+                low = middle + 1;
+        }
+        return null;
+    }
 
     /**
      * @return bus stop id
@@ -164,21 +175,18 @@ public class BusStop implements Comparable<BusStop> {
         Collections.sort(edges);
     }
 
-    
     /**
      * @return bus stop index in bus stop array
      */
-    public int getIndex()
-    {
+    public int getIndex() {
         return index;
     }
 
-     /**
+    /**
      * @param index: new bus stop index
      */
-    public void setIndex(int index)
-    {
+    public void setIndex(int index) {
         this.index = index;
     }
- 
+
 }

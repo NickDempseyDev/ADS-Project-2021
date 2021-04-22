@@ -45,21 +45,22 @@ public class BusEdge implements Comparable<BusEdge> {
 
     /**
      * takes in string form of time, h:m:s and return int number of seconds
+     * 
      * @param time: string time to be converted
      * @return : num of seconds
      */
-    private int timeToInt(String time)
-    {
+    private int timeToInt(String time) {
         time = time.replaceAll(" ", "");
         String[] times = time.split(":");
         int hours = Integer.parseInt(times[0]);
         int minutes = Integer.parseInt(times[1]);
         int seconds = Integer.parseInt(times[2]);
-        
+
         int secondTime = (hours * 60 * 60) + (minutes * 60) + seconds;
 
         return secondTime;
     }
+
     /**
      * Returns data of edge as a string
      * 
@@ -73,13 +74,14 @@ public class BusEdge implements Comparable<BusEdge> {
         } else {
             String s = "TripID: " + tripID + ", From: " + from.getName() + ", To: " + to.getName() + ", Departure Time:"
                     + departureTime + ", Arrival Time:" + arrivalTime + ", Seq. No: " + stopSequence + ", Distance: "
-                    + distance + ", COST: " + cost;
+                    + String.format("%.5f", distance) + ", COST: " + cost;
             return s;
         }
     }
 
     /**
      * Compares edge to input edge based on tripid
+     * 
      * @param edge: edge to be compared to
      * @return 1 if >, -1 if <, 0 if equal
      */
