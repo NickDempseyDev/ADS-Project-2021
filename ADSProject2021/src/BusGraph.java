@@ -49,18 +49,21 @@ public class BusGraph {
 			}
 		}
 		Collections.sort(matchingTrips);
-		for (int i = 0; i < matchingTrips.size(); i++) {
-			System.out.println("Details for trip: " + matchingTrips.get(i));
+		if (matchingTrips.size() == 0) {
+			System.out.println("\nThere were no trips with your given arrival time.");
+		} else {
+			for (int i = 0; i < matchingTrips.size(); i++) {
+				System.out.println("Details for trip: " + matchingTrips.get(i));
 
-			BusEdge currentEdge = stops[tripIDs.get(matchingTrips.get(i))].findBusEdge(matchingTrips.get(i));
+				BusEdge currentEdge = stops[tripIDs.get(matchingTrips.get(i))].findBusEdge(matchingTrips.get(i));
 
-			while (currentEdge != null && currentEdge.getArrivalTimeAsSeconds() <= time) {
-				System.out.println(currentEdge);
-				currentEdge = currentEdge.getTo().findBusEdge(matchingTrips.get(i));
+				while (currentEdge != null && currentEdge.getArrivalTimeAsSeconds() <= time) {
+					System.out.println(currentEdge);
+					currentEdge = currentEdge.getTo().findBusEdge(matchingTrips.get(i));
+				}
+				System.out.println("\n");
 			}
-			System.out.println("\n");
 		}
-
 	}
 
 	public BusStop getExactBusStop(String key) {
