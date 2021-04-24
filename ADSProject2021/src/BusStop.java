@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Arrays;
 
-public class BusStop implements Comparable<BusStop> {
+public class BusStop implements Comparable<BusStop> 
+{
     private int ID;
     private int code;
     private String name;
@@ -17,7 +17,8 @@ public class BusStop implements Comparable<BusStop> {
     private int index;
 
     public BusStop(int ID, int code, String name, String desc, double lat, double lon, String zoneID, int locType,
-            int parent) {
+            int parent) 
+    {
         this.ID = ID;
         this.code = code;
         this.name = name;
@@ -38,16 +39,24 @@ public class BusStop implements Comparable<BusStop> {
      * @return string of bus stop data
      */
     @Override
-    public String toString() {
+    public String toString() 
+    {
+    	//Don't print out long/lat/ any pointless data 
         return "[" + index + "] " + ID + ", " + code + ", " + name + ", "
-                + desc/*
-                       * + "," + lat + "," + lon + "," + zoneID + "," + locType + "," + parent
-                       */;
+                + desc;
     }
-
-    public boolean existsTransfer(BusStop dest) {
-        for (BusEdge edge : edges) {
-            if (edge.getTo() == dest && edge.getIsTransfer()) {
+    
+    /**
+     * Checks if there exists a transfer between current busstop and input busstop
+     * @param dest : busstop to check if there is a transfer to
+     * @return true if yes, false otherwise
+     */ 
+    public boolean existsTransfer(BusStop dest) 
+    {
+        for (BusEdge edge : edges) 
+        {
+            if (edge.getTo() == dest && edge.getIsTransfer())
+            {
                 return true;
             }
         }
@@ -61,20 +70,32 @@ public class BusStop implements Comparable<BusStop> {
      * @return 1 if >, -1 if <, 0 if equal
      */
     @Override
-    public int compareTo(BusStop stop) {
-        if (this.ID == ((BusStop) stop).ID) {
+    public int compareTo(BusStop stop) 
+    {
+        if (this.ID == ((BusStop) stop).ID) 
+        {
             return 0;
-        } else if (this.ID < ((BusStop) stop).ID) {
+        } 
+        else if (this.ID < ((BusStop) stop).ID) 
+        {
             return -1;
         }
         return 1;
     }
 
-    public BusEdge findBusEdge(int id) {
+    /**
+     * Find a busedge with a given tripID
+     * @param id : id we want to find
+     * @return busedge with that trip id, null if it doesnt exist
+     */
+    public BusEdge findBusEdge(int id) 
+    {
+    	//uses binary search
         int low = 0;
         int high = edges.size() - 1;
 
-        while (low <= high) {
+        while (low <= high) 
+        {
             int middle = low + ((high - low) / 2);
             int midID = edges.get(middle).getTripID();
 
@@ -91,70 +112,80 @@ public class BusStop implements Comparable<BusStop> {
     /**
      * @return bus stop id
      */
-    public int getID() {
+    public int getID() 
+    {
         return ID;
     }
 
     /**
      * @return bus stop code
      */
-    public int getCode() {
+    public int getCode()
+    {
         return code;
     }
 
     /**
      * @return bus stop name
      */
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
     /**
      * @return bus stop desc
      */
-    public String getDesc() {
+    public String getDesc()
+    {
         return desc;
     }
 
     /**
      * @return bus stop lat
      */
-    public Double getLat() {
+    public Double getLat() 
+    {
         return lat;
     }
 
     /**
      * @return bus stop lon
      */
-    public Double getLon() {
+    public Double getLon() 
+    {
         return lon;
     }
 
     /**
      * @return bus stop zoneID
      */
-    public String getZoneID() {
+    public String getZoneID() 
+    {
         return zoneID;
     }
 
     /**
      * @return bus stop loctype
      */
-    public int getLocType() {
+    public int getLocType() 
+    {
         return locType;
     }
 
     /**
      * @return bus stop parent
      */
-    public int getParent() {
+    public int getParent()
+    {
         return parent;
     }
 
     /**
      * @return bus stop edges
      */
-    public ArrayList<BusEdge> getEdges() {
+    public ArrayList<BusEdge> getEdges() 
+    {
         return edges;
     }
 
@@ -164,28 +195,32 @@ public class BusStop implements Comparable<BusStop> {
      * @param edge: edge to be added to bus stop
      * @return true if it worked, false otherwise
      */
-    public boolean addEdge(BusEdge edge) {
+    public boolean addEdge(BusEdge edge) 
+    {
         return edges.add(edge);
     }
 
     /**
      * Sort the edge arraylist
      */
-    public void sortEdges() {
+    public void sortEdges()
+    {
         Collections.sort(edges);
     }
 
     /**
      * @return bus stop index in bus stop array
      */
-    public int getIndex() {
+    public int getIndex()
+    {
         return index;
     }
 
     /**
      * @param index: new bus stop index
      */
-    public void setIndex(int index) {
+    public void setIndex(int index) 
+    {
         this.index = index;
     }
 

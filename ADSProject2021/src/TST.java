@@ -1,12 +1,14 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.ArrayList;
+//Code accredited to course textbook, minor adjustments made
 
-public class TST<Value> {
+public class TST<Value> 
+{
     private int n; // size
     private Node<Value> root; // root of TST
 
-    private static class Node<Value> {
+    private static class Node<Value>
+    {
         private char c; // character
         private Node<Value> left, mid, right; // left, middle, and right subtries
         private Value val; // value associated with string
@@ -15,7 +17,8 @@ public class TST<Value> {
     /**
      * Initializes an empty string symbol table.
      */
-    public TST() {
+    public TST() 
+    {
     }
 
     /**
@@ -23,7 +26,8 @@ public class TST<Value> {
      * 
      * @return the number of key-value pairs in this symbol table
      */
-    public int size() {
+    public int size() 
+    {
         return n;
     }
 
@@ -35,8 +39,10 @@ public class TST<Value> {
      *         {@code false} otherwise
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
-    public boolean contains(String key) {
-        if (key == null) {
+    public boolean contains(String key) 
+    {
+        if (key == null) 
+        {
             throw new IllegalArgumentException("argument to contains() is null");
         }
         return get(key) != null;
@@ -50,8 +56,10 @@ public class TST<Value> {
      *         table and {@code null} if the key is not in the symbol table
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
-    public Value get(String key) {
-        if (key == null) {
+    public Value get(String key) 
+    {
+        if (key == null) 
+        {
             throw new IllegalArgumentException("calls get() with null argument");
         }
         if (key.length() == 0)
@@ -63,7 +71,8 @@ public class TST<Value> {
     }
 
     // return subtrie corresponding to given key
-    private Node<Value> get(Node<Value> x, String key, int d) {
+    private Node<Value> get(Node<Value> x, String key, int d) 
+    {
         if (x == null)
             return null;
         if (key.length() == 0)
@@ -88,7 +97,8 @@ public class TST<Value> {
      * @param val the value
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
-    public void put(String key, Value val) {
+    public void put(String key, Value val) 
+    {
         if (key == null) {
             throw new IllegalArgumentException("calls put() with null key");
         }
@@ -99,7 +109,8 @@ public class TST<Value> {
         root = put(root, key, val, 0);
     }
 
-    private Node<Value> put(Node<Value> x, String key, Value val, int d) {
+    private Node<Value> put(Node<Value> x, String key, Value val, int d)
+    {
         char c = key.charAt(d);
         if (x == null) {
             x = new Node<Value>();
@@ -125,8 +136,10 @@ public class TST<Value> {
      *         {@code query}, or {@code null} if no such string
      * @throws IllegalArgumentException if {@code query} is {@code null}
      */
-    public String longestPrefixOf(String query) {
-        if (query == null) {
+    public String longestPrefixOf(String query) 
+    {
+        if (query == null) 
+        {
             throw new IllegalArgumentException("calls longestPrefixOf() with null argument");
         }
         if (query.length() == 0)
@@ -134,7 +147,8 @@ public class TST<Value> {
         int length = 0;
         Node<Value> x = root;
         int i = 0;
-        while (x != null && i < query.length()) {
+        while (x != null && i < query.length())
+        {
             char c = query.charAt(i);
             if (c < x.c)
                 x = x.left;
@@ -157,7 +171,8 @@ public class TST<Value> {
      * 
      * @return all keys in the symbol table as an {@code Iterable}
      */
-    public Iterable<String> keys() {
+    public Iterable<String> keys() 
+    {
         Queue<String> queue = new Queue<String>();
         collect(root, new StringBuilder(), queue);
         return queue;
@@ -171,8 +186,10 @@ public class TST<Value> {
      *         iterable
      * @throws IllegalArgumentException if {@code prefix} is {@code null}
      */
-    public String[] keysWithPrefix(String prefix) {
-        if (prefix == null) {
+    public String[] keysWithPrefix(String prefix)
+    {
+        if (prefix == null) 
+        {
             throw new IllegalArgumentException("calls keysWithPrefix() with null argument");
         }
         Queue<String> queue = new Queue<String>();
@@ -184,14 +201,16 @@ public class TST<Value> {
         collect(x.mid, new StringBuilder(prefix), queue);
         String[] arr = new String[queue.size()];
         int count = 0;
-        while (!queue.isEmpty()) {
+        while (!queue.isEmpty())
+        {
             arr[count++] = queue.dequeue();
         }
         return arr;
     }
 
     // all keys in subtrie rooted at x with given prefix
-    private void collect(Node<Value> x, StringBuilder prefix, Queue<String> queue) {
+    private void collect(Node<Value> x, StringBuilder prefix, Queue<String> queue) 
+    {
         if (x == null)
             return;
         collect(x.left, prefix, queue);
@@ -210,23 +229,27 @@ public class TST<Value> {
      * @return all of the keys in the symbol table that match {@code pattern}, as an
      *         iterable, where . is treated as a wildcard character.
      */
-    public Iterable<String> keysThatMatch(String pattern) {
+    public Iterable<String> keysThatMatch(String pattern)
+    {
         Queue<String> queue = new Queue<String>();
         collect(root, new StringBuilder(), 0, pattern, queue);
 
         return queue;
     }
 
-    private void collect(Node<Value> x, StringBuilder prefix, int i, String pattern, Queue<String> queue) {
+    private void collect(Node<Value> x, StringBuilder prefix, int i, String pattern, Queue<String> queue)
+    {
         if (x == null)
             return;
         char c = pattern.charAt(i);
         if (c == '.' || c < x.c)
             collect(x.left, prefix, i, pattern, queue);
-        if (c == '.' || c == x.c) {
+        if (c == '.' || c == x.c)
+        {
             if (i == pattern.length() - 1 && x.val != null)
                 queue.enqueue(prefix.toString() + x.c);
-            if (i < pattern.length() - 1) {
+            if (i < pattern.length() - 1)
+            {
                 collect(x.mid, prefix.append(x.c), i + 1, pattern, queue);
                 prefix.deleteCharAt(prefix.length() - 1);
             }
@@ -238,13 +261,16 @@ public class TST<Value> {
     // --------------------------------------------------------------------------------------------------------------------//
     // Private Queue Class for TST
     // --------------------------------------------------------------------------------------------------------------------//
-    public class Queue<Item> implements Iterable<Item> {
+    private class Queue<Item> implements Iterable<Item> 
+    {
         private Node<Item> first; // beginning of queue
         private Node<Item> last; // end of queue
         private int n; // number of elements on queue
 
         // helper linked list class
-        private class Node<Item> {
+        @SuppressWarnings("hiding")
+		private class Node<Item> 
+        {
             private Item item;
             private Node<Item> next;
         }
@@ -252,7 +278,8 @@ public class TST<Value> {
         /**
          * Initializes an empty queue.
          */
-        public Queue() {
+        public Queue() 
+        {
             first = null;
             last = null;
             n = 0;
@@ -263,7 +290,8 @@ public class TST<Value> {
          *
          * @return {@code true} if this queue is empty; {@code false} otherwise
          */
-        public boolean isEmpty() {
+        public boolean isEmpty() 
+        {
             return first == null;
         }
 
@@ -272,20 +300,9 @@ public class TST<Value> {
          *
          * @return the number of items in this queue
          */
-        public int size() {
+        public int size()
+        {
             return n;
-        }
-
-        /**
-         * Returns the item least recently added to this queue.
-         *
-         * @return the item least recently added to this queue
-         * @throws NoSuchElementException if this queue is empty
-         */
-        public Item peek() {
-            if (isEmpty())
-                throw new NoSuchElementException("Queue underflow");
-            return first.item;
         }
 
         /**
@@ -293,7 +310,8 @@ public class TST<Value> {
          *
          * @param item the item to add
          */
-        public void enqueue(Item item) {
+        public void enqueue(Item item) 
+        {
             Node<Item> oldlast = last;
             last = new Node<Item>();
             last.item = item;
@@ -311,7 +329,8 @@ public class TST<Value> {
          * @return the item on this queue that was least recently added
          * @throws NoSuchElementException if this queue is empty
          */
-        public Item dequeue() {
+        public Item dequeue()
+        {
             if (isEmpty())
                 throw new NoSuchElementException("Queue underflow");
             Item item = first.item;
@@ -327,9 +346,11 @@ public class TST<Value> {
          *
          * @return the sequence of items in FIFO order, separated by spaces
          */
-        public String toString() {
+        public String toString() 
+        {
             StringBuilder s = new StringBuilder();
-            for (Item item : this) {
+            for (Item item : this) 
+            {
                 s.append(item);
                 s.append(' ');
             }
@@ -341,27 +362,28 @@ public class TST<Value> {
          *
          * @return an iterator that iterates over the items in this queue in FIFO order
          */
-        public Iterator<Item> iterator() {
+        public Iterator<Item> iterator()
+        {
             return new LinkedIterator(first);
         }
 
         // an iterator, doesn't implement remove() since it's optional
-        private class LinkedIterator implements Iterator<Item> {
+        private class LinkedIterator implements Iterator<Item>
+        {
             private Node<Item> current;
 
-            public LinkedIterator(Node<Item> first) {
+            public LinkedIterator(Node<Item> first)
+            {
                 current = first;
             }
 
-            public boolean hasNext() {
+            public boolean hasNext() 
+            {
                 return current != null;
             }
 
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-
-            public Item next() {
+            public Item next()
+            {
                 if (!hasNext())
                     throw new NoSuchElementException();
                 Item item = current.item;
